@@ -2,7 +2,10 @@
 
 namespace App\Exceptions;
 
+use Dotenv\Exception\ValidationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Symfony\Component\Routing\Exception\RouteNotFoundException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -45,4 +48,18 @@ class Handler extends ExceptionHandler
             //
         });
     }
+
+    
+
+    public function render($request, Throwable $exception){
+        if($exception instanceof ModelNotFoundException){
+            return response()->json(["resp"=>false,"error"=>"Error modelo no encontrado jsjsjsj"],400);
+        }
+        if($exception instanceof RouteNotFoundException){
+            return response()->json(["resp"=>false,"error"=>"Usuario no autenticado olv xd"],401);
+        }
+
+        return parent::render($request, $exception);
+    }
+    
 }

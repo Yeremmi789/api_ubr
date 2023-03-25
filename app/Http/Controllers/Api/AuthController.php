@@ -18,15 +18,18 @@ class AuthController extends Controller
     public function registro(Request $request){
         // validacion
         $request->validate([
-            "name"=>'required',
+            "name"=>'required|min:3',
             "email"=> 'required|email|unique:users',
-            "password"=> 'required|confirmed'
+            "password"=> 'required|min:8|confirmed',
+            // "roles_id"=>'required',
         ]);
         // alta de los datos
         $user = new User();
         $user->name = $request->name;
         $user->email = $request->email;
         $user->password = Hash::make($request->password);
+        // $user->roles_id =$request->roles_id;
+        $user->roles_id =2;
         $user->save();
 
         // respuesta
@@ -101,12 +104,10 @@ class AuthController extends Controller
       $userss = Auth::user();
       $token = $userss->currentAccessToken()->token;
 
-
-
       $user = Auth::user();
       $x = $user->currentAccessToken()->token;
       $token = request()->user()->currentAccessToken()->token;
-
+      
       $request->bearerToken();
 
         return response()->json([
@@ -127,7 +128,6 @@ class AuthController extends Controller
     //       "xd"=> $x,
     //   ], Response::HTTP_OK);
     // }
-    //
     // public function obt_token(){
     //   $user = Auth::user();
     //   $token = $user->tokens()->where('personal_access_tokens.name', 'token')->first();
@@ -135,8 +135,6 @@ class AuthController extends Controller
     //     'xddddd'=> $token
     //   ],200);
     // }
-    //
-    //
     public function validarTokens(){
       return response()->json(auth()->user());
     }
@@ -173,31 +171,31 @@ class AuthController extends Controller
     }
     //
     //
-    // public function buscarUsuario($id){
-    //   // $personal = User::findOrFail($id);
-    //   // return response()->json($personal);
-    //   // $user = User::findOrFail($id);
-    //
-    //   // $users = User::all()->where('id',$id)->get();
-    //   // $users = User::all()->where('id', $id);
-    //   $users = User::all()->where('id', $id)->first();
-    //   // $users = DB::table('users')->all()->where('id', $id);
-    //   // $users = User::all();
-    //
-    //   // $usuarios = json_decode($users);
-    //
-    //   // return response()->json([
-    //   //   "respuesta"=> true,
-    //   //   // "Usuario"=> $id
-    //   //   // "Usuario"=> $users
-    //   //   "Usuario"=> $usuarios
-    //   // ]);
-    //
-    //   return response()->json($users);
-    //   // return response()->json_encode($usuarios);
-    //    // return json_encode($users);
-    //
-    // }
+    public function buscarUsuario($id){
+      // $personal = User::findOrFail($id);
+      // return response()->json($personal);
+      // $user = User::findOrFail($id);
+    
+      // $users = User::all()->where('id',$id)->get();
+      // $users = User::all()->where('id', $id);
+      $users = User::all()->where('id', $id)->first();
+      // $users = DB::table('users')->all()->where('id', $id);
+      // $users = User::all();
+    
+      // $usuarios = json_decode($users);
+    
+      // return response()->json([
+      //   "respuesta"=> true,
+      //   // "Usuario"=> $id
+      //   // "Usuario"=> $users
+      //   "Usuario"=> $usuarios
+      // ]);
+    
+      return response()->json($users);
+      // return response()->json_encode($usuarios);
+       // return json_encode($users);
+    
+    }
 
 
 }

@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Api\AuthController;
-
+use App\Http\Controllers\Api\Paciente;
 use App\Http\Middleware\EnsureTokenIsValid;
 
 /*
@@ -49,17 +49,26 @@ Route::post('login', [AuthController::class, 'login']);
 // });
 
 Route::group(['middleware' => 'auth:sanctum'], function(){
+    //PERSONAL
     Route::get('userprofile', [AuthController::class, 'userProfile']);
     Route::post('logout', [AuthController::class, 'logout']);
-
     Route::get('users', [AuthController::class, 'allUsers']);
     // Route::post('validarToken', [AuthController::class, 'validarToken']);
     // Route::get('buscar', [AuthController::class, 'buscar']);
-    Route::get('validarToken', [AuthController::class, 'validarTokens']);
-    //
     // Route::get('token', [AuthController::class, 'obt_token']);
+    Route::get('validarToken', [AuthController::class, 'validarTokens']);
+    Route::get('buscar_trabajador/{id}', [AuthController::class, 'buscarUsuario']);
+    //PERSONAL
+
+    // PACIENTES
+    Route::get('Allpacientes', [Paciente::class, 'mostrarTodo']);
+    Route::post('registrarPaciente', [Paciente::class, 'registrar']);
+    Route::get('buscarPaciente/{id}', [Paciente::class, 'buscarPaciente']);
+    Route::post('borrarPaciente/{id}', [Paciente::class, 'eliminar']);
+    // Route::get('editarPaciente', [Paciente::class, 'editar']); A este le falta tener mas tablas relacionadas como el representante, dirección etc etc
+    // PACIENTES
 });
 
 // Route::get('users', [AuthController::class, 'allUsers']);
-
-Route::get('buscar_trabajador/{id}', [AuthController::class, 'buscarUsuario']);
+// Route::get('Allpacientes', [Paciente::class, 'mostrarTodo']);
+// Route::get('buscar_trabajador/{id}', [AuthController::class, 'buscarUsuario']);
