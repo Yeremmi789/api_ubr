@@ -69,7 +69,9 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    // 'timezone' => 'UTC',
+    'timezone' => 'America/Mexico_City',
+    
 
     /*
     |--------------------------------------------------------------------------
@@ -194,6 +196,13 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+
+
+        /*
+        * Third-Party Service Providers...
+        */
+        Spatie\Backup\BackupServiceProvider::class,
+
 
     ],
 

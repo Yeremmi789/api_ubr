@@ -16,28 +16,48 @@ class AuthController extends Controller
 {
     //
     public function registro(Request $request){
+
+      $bandera = false;
         // validacion
         $request->validate([
             "name"=>'required|min:3',
+            'apellido_paterno' => 'required|string|max:50',
+            'apellido_materno' => 'required|string|max:50',
+
+            
+            'edad' => 'required|numeric|min:18|max:65',
             "email"=> 'required|email|unique:users',
             "password"=> 'required|min:8|confirmed',
-            // "roles_id"=>'required',
+
+
+
+            'terapia_id' => 'required',
+            // 'roles_id' => 'required', //El ROLL no se pide, debido a que obligatoriamente se ale asignará un dos como usuario normal
+            // 'pregunta_id' => 'required'
         ]);
         // alta de los datos
         $user = new User();
         $user->name = $request->name;
+
+        $user->apellido_paterno = $request->apellido_paterno;
+        $user->apellido_materno = $request->apellido_materno;
+        $user->edad = $request->edad;
+
         $user->email = $request->email;
         $user->password = Hash::make($request->password);
+
+        $user->respuesta = $request->respuesta;
         // $user->roles_id =$request->roles_id;
         $user->roles_id =2;
+        $user->terapia_id = $request->terapia_id;
+        $user->pregunta_id = $request->pregunta;
         $user->save();
 
-        // respuesta
-
-        // return response()->json([
-        //     "message"=> "metodo GET"
-        // ]);
-        return response($user, Response::HTTP_CREATED);
+        // return response($user, Response::HTTP_CREATED);
+        return response()->json([
+          $user,
+          "ok" => !$bandera,
+        ], Response::HTTP_CREATED);
 
     }
     public function login(Request $request){
@@ -48,49 +68,44 @@ class AuthController extends Controller
             'name'=>['required'],
             'password'=>['required'],
         ]);
-
-        // $correo_buscar = $request->email;
         $nombre_buscar = $request->name;
 
-        if(Auth::attempt($credenciales)){
 
-            // $users = User::all()->where('email', $correo_buscar)->first();
-            $users = User::all()->where('name', $nombre_buscar)->first();
+        if(Auth::attempt($credenciales)){
+            // $users = User::join('roles','users.roles_id', '=', 'roles.id')
+            // ->where('users.name', $nombre_buscar)->first();
+            $users = User::join('roles','users.roles_id', '=', 'roles.id')
+            ->join('tipos_terapias','users.terapia_id', '=', 'tipos_terapias.id')
+            ->select('users.*', 'roles.nombre', 'tipos_terapias.nombre as terapia')
+            ->where('users.name', $nombre_buscar)->first();
+
+            // return response()->json("hola");
+            // $area = User::join('tipos_terapias','users.terapia_id', '=', 'tipos_terapias.id')
+            // ->select('tipos_terapias.nombre as terapia')
+            // ->where('users.name', $nombre_buscar)->first();
 
             $user = Auth::user();
             $token = $user->createToken('token')->plainTextToken;
-
-            // $resultadoToken = $token->token;
-            // if (request('remember_me')) {
-            //   $resultadoToken->expires_at = Carbon::now()->addWeeks(1);
-            // }
-            // $cookie = cookie('cookie_token',$token, 60*24);
-            // $resultadoToken->save();
             return response(["token"=>$token,
             "mssg" => "credenciales correctas",
             "ok" => !$bandera,
-
             "id"=>$users->id,
             "name"=>$users->name,
-            "email"=>$users->email
-
-          // ], Response::HTTP_OK)->withoutCookie(($cookie));
+            "email"=>$users->email,
+            "role" =>$users->nombre,
+            
+            // "area" =>$area,
+            // $area,
+            "area" =>$users->terapia,
+            
         ], 200);
         }else{
-            // // return response(["message"=> "credenciales incorrectas"], Response::HTTP_UNAUTHORIZED);
-            // // return response(["mssg"=> "false"], Response::HTTP_UNAUTHORIZED);
-            // return response(["mssg"=> "credenciales incorrectas",
-            // "ok" => $bandera
-            // ], Response::HTTP_UNAUTHORIZED);
             return response()->json([
               "mssg"=> "credenciales incorrectas",
               "ok" => $bandera
             ],401);
         }
 
-        // return response()->json([
-        //     "message"=> "metodo login OK"
-        // ]);
     }
 
     public function userProfile(){
@@ -98,6 +113,11 @@ class AuthController extends Controller
             "message"=> "userProfile OK",
             "userData" => auth()->user()
         ], Response::HTTP_OK);
+    }
+
+    public function misRoles(){
+      $misDatos = auth()->user();
+      return response()->json($misDatos);
     }
 
     public function validarToken(Request $request){
@@ -138,21 +158,7 @@ class AuthController extends Controller
     public function validarTokens(){
       return response()->json(auth()->user());
     }
-    //
-    // public function refreshToken(){
-    //   return $this->respondWithToken(auth()->refresh());
-    // }
-    //
-    // // public function logout(Request $request){
-    // //     $cookie = Cookie::forget('cookie_token');
-    // //     return response(["message"=> "Cierre de sesion OK"], Response::HTTP_OK)->withCookie(($cookie));
-    // // }
-    //
-    // public function logout() {
-    //     $cookie = Cookie::forget('cookie_token');
-    //     return response(["message"=>"Cierre de sesión OK"], Response::HTTP_OK)->withCookie($cookie);
-    // }
-    //
+
     public function logout(Request $request) {
       $bandera = false;
 
@@ -172,29 +178,8 @@ class AuthController extends Controller
     //
     //
     public function buscarUsuario($id){
-      // $personal = User::findOrFail($id);
-      // return response()->json($personal);
-      // $user = User::findOrFail($id);
-    
-      // $users = User::all()->where('id',$id)->get();
-      // $users = User::all()->where('id', $id);
       $users = User::all()->where('id', $id)->first();
-      // $users = DB::table('users')->all()->where('id', $id);
-      // $users = User::all();
-    
-      // $usuarios = json_decode($users);
-    
-      // return response()->json([
-      //   "respuesta"=> true,
-      //   // "Usuario"=> $id
-      //   // "Usuario"=> $users
-      //   "Usuario"=> $usuarios
-      // ]);
-    
       return response()->json($users);
-      // return response()->json_encode($usuarios);
-       // return json_encode($users);
-    
     }
 
 

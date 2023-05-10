@@ -13,6 +13,12 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             //
+            $table->bigInteger('terapia_id')->unsigned()->nullable();
+            $table
+            ->foreign('terapia_id')
+            ->references('id')
+            ->on('tipos_terapias')
+            ->after('id');
             
         });
     }
@@ -24,6 +30,7 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             //
+            $table->dropColumn('terapia_id');
         });
     }
 };
