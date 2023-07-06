@@ -15,7 +15,7 @@ class UsuarioController extends Controller
         $users = User::join('roles','users.roles_id', '=', 'roles.id')
             ->join('tipos_terapias','users.terapia_id', '=', 'tipos_terapias.id')
             // ->select('users.*', 'roles.nombre', 'tipos_terapias.nombre as terapia')
-            ->select('users.name', 'users.apellido_paterno', 'users.apellido_materno',
+            ->select('users.id','users.name', 'users.apellido_paterno', 'users.apellido_materno',
             'users.edad', 'roles.nombre as rol', 'tipos_terapias.nombre as terapia')
             ->get();
             // ->where('users.name', $nombre_buscar)->first();
@@ -29,7 +29,18 @@ class UsuarioController extends Controller
     //
     public function buscarUsuario($id)
     {
+        $token = request()->user()->currentAccessToken()->token;
         $users = User::all()->where('id', $id)->first();
         return response()->json($users);
     }
+
+
+    public function obtener($id)
+    {
+        $token = request()->user()->currentAccessToken()->token;
+        $usuario = User::find($id);
+        // Aquí puedes realizar cualquier acción adicional con los datos del usuario obtenido, como devolverlo como una respuesta JSON
+        return response()->json($usuario);
+    }
+
 }

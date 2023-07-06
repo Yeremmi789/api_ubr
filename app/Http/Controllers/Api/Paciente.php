@@ -41,24 +41,24 @@ class Paciente extends Controller
 
     public function registrar(Request $request)
     {
-        
+
         $paciente = new pacientes;
-        $paciente->edad = $request->edad; 
-        $paciente->nombre = $request->nombre; 
-        $paciente->apellidoP = $request->apellidoP; 
-        $paciente->apellidoM = $request->apellidoM; 
-        $paciente->expediente = $request->expediente; 
-        $paciente->tipoABC = $request->tipoABC; 
-        $paciente->sexo = $request->sexo; 
-        $paciente->direccion = $request->direccion; 
-        $paciente->patologia = $request->patologia; 
+        $paciente->edad = $request->edad;
+        $paciente->nombre = $request->nombre;
+        $paciente->apellidoP = $request->apellidoP;
+        $paciente->apellidoM = $request->apellidoM;
+        $paciente->expediente = $request->expediente;
+        $paciente->tipoABC = $request->tipoABC;
+        $paciente->sexo = $request->sexo;
+        $paciente->direccion = $request->direccion;
+        $paciente->patologia = $request->patologia;
         $paciente->save();
-        $data=[
+        $data = [
             'message' => 'paciente registrado satisfactoriamente',
-            'paciente'=>$paciente
+            'paciente' => $paciente
         ];
         return response()->json($data);
-    }    
+    }
 
     public function mostrarTodo(Request $request)
     {
@@ -85,4 +85,17 @@ class Paciente extends Controller
         $pacient->delete();
         return redirect()->back()->with('success', 'paciente eliminado/eliminada');
     }
+
+    public function vPaciente(Request $request)
+    {
+        $consulta = $request->input('consulta');
+        $pacientes = Pacientes::where('nombre', 'like', '%' . $consulta . '%')
+            ->orWhere('apellidoP', 'like', '%' . $consulta . '%')
+            ->orWhere('apellidoM', 'like', '%' . $consulta . '%')
+            ->select('nombre', 'apellidoP', 'apellidoM')
+            ->get();
+
+        return response()->json($pacientes);
+    }
+
 }

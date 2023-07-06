@@ -18,6 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('paciente_id');
             $table->foreign('paciente_id')->references('id')->on('pacientes');
             $table->date('fecha');
+            $table->time('hora');
             $table->unsignedBigInteger('terapeuta_id');
             $table->foreign('terapeuta_id')->references('id')->on('users');
             $table->timestamps();

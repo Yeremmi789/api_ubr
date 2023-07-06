@@ -15,7 +15,7 @@ class CitasController extends Controller
         $citas->asunto = $request->asunto; 
         $citas->descripcion = $request->descripcion; 
         $citas->fecha = $request->fecha; 
-        $citas->teapeuta = $request->teapeuta; 
+        $citas->terapeuta_id = $request->teapeuta; 
         $citas->save();
         $data=[
             'message' => 'cita registrada satisfactoriamente',

@@ -7,12 +7,14 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BackupController;
+use App\Http\Controllers\Api\CitaController;
 use App\Http\Controllers\Api\NuevaContraseñaController;
 use App\Http\Controllers\Api\Paciente;
 use App\Http\Controllers\Api\PreguntaController;
 use App\Http\Controllers\Api\RollController;
 use App\Http\Controllers\Api\TerapiaController;
 use App\Http\Controllers\Api\UsuarioController;
+use App\Http\Controllers\CitasController;
 use App\Http\Middleware\EnsureTokenIsValid;
 
 
@@ -52,47 +54,40 @@ Route::group(['middleware' => 'auth:sanctum'], function(){
     
     Route::post('respaldo', [BackupController::class, 'respaldo']);
     // Route::get('respaldo', [BackupController::class, 'respaldo']);
-    //RESPALDOS BASE DE DATOS
-    
-    // RECUPERACIÓN DE CONTRASEÑAS
-    // Route::post('forgetPassword', [NuevaContraseñaController::class, 'olvideMiContrasena']);
-    // RECUPERACIÓN DE CONTRASEÑAS
-    Route::post('contrase', [NuevaContraseñaController::class, 'olvideMiContrasena']);
+    //RESPALDOS BASE DE DATOSaw
     
     // USUARIOS
     
     Route::get('AllUsuarios', [UsuarioController::class, 'allUsers']);
+    Route::get('editUsuario/{id}', [UsuarioController::class, 'buscarUsuario']);
+    // Route::get('editUsuario/{id}', [UsuarioController::class, 'obtener']);
     // USUARIOS
+
+    // CITAS
+    
+    // Route::get('allTerapeutas', [CitaController::class, 'mostrarTerapeutas']);
+    // CITAS
+
+
+    // Global
+    // Route::get('verfiPaciente', [Paciente::class, 'verficarPaciente']);
+    // Global
 });
+    // Route::get('verfiPaciente', [Paciente::class, 'verficarPaciente']);
+    Route::post('verEnfermo', [Paciente::class, 'vPaciente']);
+    Route::post('addCitas', [CitaController::class, 'addCita']);
+
+Route::get('allTerapeutas', [CitaController::class, 'mostrarTerapeutas']);
 
 Route::post('registrarPaciente', [Paciente::class, 'registrar']);
 
 Route::get('allTerapias', [TerapiaController::class, 'mostrarTerapias']);
+
+
+// Recuperar Contraseña
 Route::get('preguntas', [PreguntaController::class, 'mostrar']);
-
-
-Route::get('verfRespuesta', [PreguntaController::class, 'comparar']);
-// Route::get('pedir', [PreguntaController::class, 'Pedircorreo']);
-Route::post('verificar', [PreguntaController::class, 'correo']);
-
-
-Route::post('verificarRespuesta', [PreguntaController::class, 'busPalabra']);
-
-
-Route::post('pedir', [PreguntaController::class, 'Pedircorreo']);
-Route::post('cambiar', [PreguntaController::class, 'comp_Cambiar']);
-
-Route::post('newContrasena', [PreguntaController::class, 'nuevaContrasena']);
-// Route::get('pedir/{email}', [PreguntaController::class, 'Pedircorreo']);
-
-
-
-// Route::post('contrase', [NuevaContraseñaController::class, 'olvideMiContrasena']);
-
-// Route::get('respaldoManual', [BackupController::class, 'crearRespaldoManual']);
-
-// Route::post('respaldoManual', [BackupController::class, 'crearRespaldoManual']);
-
-// Route::get('users', [AuthController::class, 'allUsers']);
-// Route::get('Allpacientes', [Paciente::class, 'mostrarTodo']);
-// Route::get('buscar_trabajador/{id}', [AuthController::class, 'buscarUsuario']);
+Route::post('verificar', [PreguntaController::class, 'correo']); ///*
+Route::post('verificarRespuesta', [PreguntaController::class, 'busPalabra']);///*
+Route::post('pedir', [PreguntaController::class, 'Pedircorreo']);///*
+Route::post('newContrasena', [PreguntaController::class, 'nuevaContrasena']);///*
+// Recuperar Contraseña

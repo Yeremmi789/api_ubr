@@ -66,20 +66,6 @@ class PreguntaController extends Controller
     }
 
 
-    public function comp_Cambiar(Request $request)
-    {
-        $recibido = $request->respuesta;
-        // $respuesta = User::select('respuesta')->where('respuesta', $recibido)->first();
-        $respuesta = User::findOrFail($recibido);
-        $dato = $recibido;
-        $respuesta->update($dato);
-
-        // if($respuesta){
-        //     $actualizar = User::find($recibido);
-        //     $actualizar->respuesta = $recibido;
-        // }
-        // return $recibir_respuesta;
-    }
 
 // Esta funcion "PedirCorreo" lo tendrá Angular (mostrará solamente la pregunta y la respuesta estará almacenada pero no se mostrará)
 // Entonces, la respuesta solamente para comparar si la respuesta es la misma.
